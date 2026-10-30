@@ -1,0 +1,770 @@
+```
+index.html
+```
+  
+<!DOCTYPE html>  
+<html lang="ja">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<meta name="theme-color" content="#102b24">  
+<title>ALPINE CHECK｜山岳適性診断</title>  
+<style>  
+:root {  
+  --bg: #0b1915;  
+  --panel: #142a23;  
+  --panel2: #1b352c;  
+  --green: #9bc6a8;  
+  --bright: #c7e6ce;  
+  --white: #f3f7f2;  
+  --muted: #a9b9af;  
+  --orange: #f0b76d;  
+  --red: #ef8580;  
+  --line: #345044;  
+}  
+* { box-sizing: border-box; }  
+html { scroll-behavior: smooth; }  
+body {  
+  margin: 0;  
+  background: var(--bg);  
+  color: var(--white);  
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",  
+    "Noto Sans JP", sans-serif;  
+  line-height: 1.7;  
+}  
+a {  
+  color: var(--bright);  
+  text-decoration: underline;  
+  text-underline-offset: 3px;  
+  overflow-wrap: anywhere;  
+  touch-action: manipulation;  
+}  
+a:active { opacity: .7; }  
+button, input, textarea { font: inherit; }  
+button { cursor: pointer; touch-action: manipulation; }  
+.wrap { width: min(100% - 32px, 960px); margin: auto; }  
+header {  
+  position: sticky;  
+  top: 0;  
+  z-index: 20;  
+  background: rgba(11,25,21,.96);  
+  border-bottom: 1px solid var(--line);  
+  backdrop-filter: blur(10px);  
+}  
+.header-inner {  
+  min-height: 62px;  
+  display: flex;  
+  align-items: center;  
+  justify-content: space-between;  
+  gap: 12px;  
+}  
+.logo { font-weight: 900; letter-spacing: 2px; color: var(--bright); }  
+nav { display: flex; gap: 14px; flex-wrap: wrap; }  
+nav a { font-size: 12px; text-decoration: none; color: var(--muted); }  
+.hero {  
+  padding: 52px 0 42px;  
+  overflow: hidden;  
+}  
+.hero-inner {  
+  display: grid;  
+  grid-template-columns: 1.1fr .9fr;  
+  align-items: center;  
+  gap: 24px;  
+}  
+.hero-copy { min-width: 0; position: relative; z-index: 1; }  
+.eyebrow {  
+  color: var(--green);  
+  font-size: 11px;  
+  letter-spacing: 3px;  
+  font-weight: 800;  
+}  
+h1 {  
+  font-size: clamp(34px, 7vw, 66px);  
+  line-height: 1.12;  
+  letter-spacing: -1px;  
+  margin: 12px 0 18px;  
+}  
+h1 span { color: var(--green); }  
+.hero-copy p { color: var(--muted); max-width: 520px; }  
+.hero-art {  
+  min-width: 0;  
+  width: 100%;  
+  min-height: 230px;  
+  display: grid;  
+  place-items: center;  
+  position: relative;  
+  pointer-events: none;  
+}  
+.mountain-art {  
+  width: 100%;  
+  max-width: 390px;  
+  height: auto;  
+  display: block;  
+}  
+.btn {  
+  display: inline-flex;  
+  justify-content: center;  
+  align-items: center;  
+  border: 0;  
+  border-radius: 12px;  
+  padding: 13px 20px;  
+  background: var(--green);  
+  color: #10251c;  
+  font-weight: 800;  
+  text-decoration: none;  
+  margin-top: 12px;  
+}  
+.btn.secondary {  
+  background: transparent;  
+  color: var(--bright);  
+  border: 1px solid var(--line);  
+}  
+section { padding: 30px 0; scroll-margin-top: 75px; }  
+.section-title { font-size: 23px; margin: 0 0 8px; }  
+.section-sub { color: var(--muted); font-size: 13px; margin: 0 0 20px; }  
+.panel {  
+  background: var(--panel);  
+  border: 1px solid var(--line);  
+  border-radius: 18px;  
+  padding: 20px;  
+  margin: 14px 0;  
+}  
+.grid {  
+  display: grid;  
+  grid-template-columns: repeat(2, minmax(0,1fr));  
+  gap: 12px;  
+}  
+.field label {  
+  display: block;  
+  font-size: 12px;  
+  color: var(--muted);  
+  margin-bottom: 5px;  
+}  
+input, textarea {  
+  width: 100%;  
+  background: #0d211a;  
+  color: var(--white);  
+  border: 1px solid var(--line);  
+  border-radius: 10px;  
+  padding: 11px 12px;  
+  outline: none;  
+}  
+input:focus, textarea:focus { border-color: var(--green); }  
+textarea { min-height: 76px; resize: vertical; }  
+.small-note { color: var(--muted); font-size: 12px; }  
+.weather-options, .choices { display: grid; gap: 10px; }  
+.choice {  
+  display: flex;  
+  gap: 11px;  
+  align-items: flex-start;  
+  padding: 13px;  
+  border: 1px solid var(--line);  
+  border-radius: 12px;  
+  background: #10241d;  
+  cursor: pointer;  
+}  
+.choice:has(input:checked) {  
+  border-color: var(--green);  
+  background: #203b2e;  
+}  
+.choice input { width: auto; margin-top: 5px; accent-color: var(--green); }  
+.progress-top {  
+  display: flex;  
+  justify-content: space-between;  
+  gap: 12px;  
+  color: var(--muted);  
+  font-size: 12px;  
+}  
+.progress {  
+  height: 7px;  
+  border-radius: 10px;  
+  background: #263d33;  
+  overflow: hidden;  
+  margin: 10px 0 22px;  
+}  
+.progress-fill {  
+  height: 100%;  
+  width: 0;  
+  background: var(--green);  
+  transition: width .2s;  
+}  
+.question-number { color: var(--green); font-size: 12px; font-weight: 800; }  
+.question-title { font-size: 21px; margin: 8px 0 18px; }  
+.quiz-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 20px; }  
+.quiz-actions button, .action-button {  
+  border: 0;  
+  border-radius: 10px;  
+  padding: 12px 18px;  
+  font-weight: 800;  
+  background: var(--green);  
+  color: #10251c;  
+}  
+.quiz-actions button:disabled { opacity: .35; cursor: not-allowed; }  
+.quiz-actions .back { background: #263e33; color: var(--white); }  
+.hidden { display: none !important; }  
+.result-score { font-size: 48px; font-weight: 900; color: var(--bright); }  
+.result-grade { font-size: 30px; font-weight: 900; }  
+.result-card { border: 1px solid var(--line); border-radius: 16px; padding: 20px; background: var(--panel2); }  
+.warning {  
+  border-left: 4px solid var(--orange);  
+  background: #332b1d;  
+  padding: 12px 14px;  
+  border-radius: 8px;  
+  margin: 12px 0;  
+}  
+.danger {  
+  border-left: 4px solid var(--red);  
+  background: #382322;  
+  padding: 12px 14px;  
+  border-radius: 8px;  
+  margin: 12px 0;  
+}  
+.check-list { display: grid; gap: 9px; }  
+.check-item {  
+  display: flex;  
+  align-items: center;  
+  gap: 10px;  
+  padding: 11px;  
+  background: #10241d;  
+  border: 1px solid var(--line);  
+  border-radius: 10px;  
+}  
+.check-item input { width: auto; accent-color: var(--green); }  
+.check-progress { color: var(--green); font-weight: 800; }  
+.resource-list { display: grid; gap: 12px; }  
+.resource {  
+  display: block;  
+  position: relative;  
+  z-index: 2;  
+  padding: 14px;  
+  border: 1px solid var(--line);  
+  border-radius: 12px;  
+  background: #10241d;  
+  text-decoration: none;  
+  color: var(--bright);  
+  pointer-events: auto;  
+  touch-action: manipulation;  
+}  
+.resource strong { display: block; margin-bottom: 3px; }  
+.resource span { font-size: 12px; color: var(--muted); }  
+footer {  
+  border-top: 1px solid var(--line);  
+  padding: 28px 0 40px;  
+  color: var(--muted);  
+  font-size: 11px;  
+}  
+@media (max-width: 650px) {  
+  .wrap { width: min(100% - 26px, 960px); }  
+  .hero { padding: 35px 0 25px; }  
+  .hero-inner { grid-template-columns: 1fr; gap: 8px; }  
+  .hero-art { min-height: 150px; max-height: 180px; }  
+  .mountain-art { max-width: 290px; max-height: 175px; }  
+  h1 { font-size: clamp(37px, 12vw, 55px); }  
+  .grid { grid-template-columns: 1fr; }  
+  nav { gap: 9px; }  
+  nav a { font-size: 11px; }  
+  .panel { padding: 16px; }  
+  .question-title { font-size: 19px; }  
+}  
+</style>  
+</head>  
+<body>  
+  
+<header>  
+  <div class="wrap header-inner">  
+    <div class="logo">▲ ALPINE CHECK</div>  
+    <nav>  
+      <a href="#plan">登山計画</a>  
+      <a href="#equipment">装備</a>  
+      <a href="#diagnosis">診断</a>  
+      <a href="#weather">天気</a>  
+    </nav>  
+  </div>  
+</header>  
+  
+<main>  
+  <div class="hero">  
+    <div class="wrap hero-inner">  
+      <div class="hero-copy">  
+        <div class="eyebrow">MOUNTAIN SAFETY CHECK</div>  
+        <h1>山に登る前に、<br><span>安全を確認。</span></h1>  
+        <p>  
+          登山の経験や準備状況をチェックして、  
+          自分の登山計画を見直そう。  
+        </p>  
+        <a class="btn" href="#diagnosis">診断を始める →</a>  
+        <a class="btn secondary" href="#plan">計画を入力する</a>  
+      </div>  
+  
+      <div class="hero-art" aria-hidden="true">  
+        <svg class="mountain-art" viewBox="0 0 420 250" xmlns="http://www.w3.org/2000/svg">  
+          <path d="M10 220 L125 65 L185 145 L260 25 L410 220 Z" fill="#294b3b"/>  
+          <path d="M125 65 L95 107 L125 94 L146 112 Z" fill="#d9e8d9"/>  
+          <path d="M260 25 L220 92 L260 75 L294 100 Z" fill="#e7f0e6"/>  
+          <path d="M185 145 L260 25 L330 132 L285 104 L260 127 L235 100 Z" fill="#416b50"/>  
+          <path d="M10 220 Q110 180 210 220 T410 220" fill="none" stroke="#8fb99a" stroke-width="4"/>  
+          <circle cx="345" cy="48" r="20" fill="#d5bd7b" opacity=".85"/>  
+          <path d="M30 220 L80 170 L115 220 M320 220 L365 165 L405 220" fill="#1a392c"/>  
+        </svg>  
+      </div>  
+    </div>  
+  </div>  
+  
+  <div class="wrap">  
+    <section id="plan">  
+      <h2 class="section-title">01 / 登山計画</h2>  
+      <p class="section-sub">登る山や予定を入力して、計画を整理しよう。</p>  
+      <div class="panel">  
+        <div class="grid">  
+          <div class="field">  
+            <label for="mountain">山の名前</label>  
+            <input id="mountain" placeholder="例：乗鞍岳">  
+          </div>  
+          <div class="field">  
+            <label for="date">登山予定日</label>  
+            <input id="date" type="date">  
+          </div>  
+          <div class="field">  
+            <label for="altitude">標高（m）</label>  
+            <input id="altitude" type="number" min="0" placeholder="例：3026">  
+          </div>  
+          <div class="field">  
+            <label for="members">参加人数</label>  
+            <input id="members" type="number" min="1" placeholder="例：3">  
+          </div>  
+          <div class="field">  
+            <label for="startTime">出発予定時刻</label>  
+            <input id="startTime" type="time">  
+          </div>  
+          <div class="field">  
+            <label for="endTime">下山予定時刻</label>  
+            <input id="endTime" type="time">  
+          </div>  
+        </div>  
+        <div class="field" style="margin-top:12px">  
+          <label for="route">登山ルート・メモ</label>  
+          <textarea id="route" placeholder="登山口、通る場所、休憩場所など"></textarea>  
+        </div>  
+        <button class="action-button" onclick="showPlan()">入力内容を確認</button>  
+        <div id="planOutput" class="small-note" aria-live="polite" style="margin-top:12px"></div>  
+        <p class="small-note">※入力内容はこの画面内で確認するためのものです。登山届の提出にはなりません。</p>  
+      </div>  
+    </section>  
+  
+    <section id="weather">  
+      <h2 class="section-title">02 / 天気の確認</h2>  
+      <p class="section-sub">山の天気は変わりやすいので、出発前と登山中に確認しよう。</p>  
+      <div class="panel">  
+        <div class="resource-list">  
+          <a class="resource" href="https://www.jma.go.jp/bosai/">  
+            <strong>気象庁｜防災情報</strong>  
+            <span>警報・注意報、雨雲の動きなどを確認</span>  
+          </a>  
+          <a class="resource" href="https://tenki.jp/mountain/">  
+            <strong>tenki.jp｜山の天気</strong>  
+            <span>山ごとの天気や気温などを確認</span>  
+          </a>  
+        </div>  
+        <p style="margin-top:20px;font-weight:800">天気を確認した結果</p>  
+        <div class="weather-options">  
+          <label class="choice"><input type="radio" name="weather" value="good"> <span>天気が安定していることを確認した</span></label>  
+          <label class="choice"><input type="radio" name="weather" value="bad"> <span>悪天候・強風などの心配がある</span></label>  
+          <label class="choice"><input type="radio" name="weather" value="unknown"> <span>まだ確認していない</span></label>  
+        </div>  
+        <p class="small-note">※このサイトが天気を自動取得するわけではありません。現地の最新情報も確認してください。</p>  
+      </div>  
+    </section>  
+  
+    <section id="equipment">  
+      <h2 class="section-title">03 / 装備チェックリスト</h2>  
+      <p class="section-sub">登山前に必要な装備を確認しよう。</p>  
+      <div class="panel">  
+        <div class="progress-top">  
+          <span>装備の準備完了率</span>  
+          <span id="equipmentPercent" class="check-progress">0%</span>  
+        </div>  
+        <div class="progress"><div id="equipmentBar" class="progress-fill"></div></div>  
+        <div id="equipmentList" class="check-list"></div>  
+      </div>  
+    </section>  
+  
+    <section id="diagnosis">  
+      <h2 class="section-title">04 / 山岳適性診断</h2>  
+      <p class="section-sub">14問の質問に答えて、登山前の準備状況を確認しよう。</p>  
+  
+      <div class="panel" id="quizPanel">  
+        <div class="progress-top">  
+          <span id="questionCount">QUESTION 01 / 14</span>  
+          <span id="questionPercent">0%</span>  
+        </div>  
+        <div class="progress"><div id="questionBar" class="progress-fill"></div></div>  
+        <div id="questionArea"></div>  
+        <div class="quiz-actions">  
+          <button class="back" id="backBtn" onclick="previousQuestion()" disabled>戻る</button>  
+          <button id="nextBtn" onclick="nextQuestion()" disabled>次へ</button>  
+        </div>  
+      </div>  
+  
+      <div class="panel hidden" id="resultPanel" aria-live="polite">  
+        <div class="eyebrow">YOUR RESULT</div>  
+        <div id="resultGrade" class="result-grade"></div>  
+        <div><span id="resultScore" class="result-score"></span> / 42点</div>  
+        <p id="resultMessage"></p>  
+        <div id="resultWarnings"></div>  
+        <div id="resultAdvice"></div>  
+        <button class="action-button" onclick="restartQuiz()">もう一度診断する</button>  
+      </div>  
+    </section>  
+  
+    <section id="resources">  
+      <h2 class="section-title">05 / 登山に役立つ情報</h2>  
+      <p class="section-sub">登山前に公式情報や登山者向けサービスを確認しよう。</p>  
+      <div class="resource-list">  
+        <a class="resource" href="https://www.pref.nagano.lg.jp/police/">  
+          <strong>長野県警察</strong>  
+          <span>山岳遭難防止や登山に関する情報</span>  
+        </a>  
+        <a class="resource" href="https://yamap.com/">  
+          <strong>YAMAP</strong>  
+          <span>登山地図や登山記録など</span>  
+        </a>  
+        <a class="resource" href="https://www.mt-compass.com/">  
+          <strong>コンパス</strong>  
+          <span>登山計画の作成・登山届の提出など</span>  
+        </a>  
+      </div>  
+    </section>  
+  </div>  
+</main>  
+  
+<footer>  
+  <div class="wrap">  
+    <p>ALPINE CHECK｜山岳適性診断</p>  
+    <p>この診断は登山の安全を保証するものではありません。結果にかかわらず、天候・体調・装備・ルート状況を確認してください。</p>  
+    <p>危険が予想される場合や不安がある場合は、登山を中止・延期する判断も大切です。</p>  
+  </div>  
+</footer>  
+  
+<script>  
+const equipment = [  
+  "登山に適した靴",  
+  "動きやすく調整できる服装",  
+  "雨具・防寒着",  
+  "飲み水",  
+  "行動食・非常食",  
+  "地図・登山アプリ",  
+  "モバイルバッテリー",  
+  "ヘッドライト",  
+  "救急用品",  
+  "必要な薬",  
+  "健康保険証など",  
+  "緊急連絡先の確認"  
+];  
+  
+const equipmentList = document.getElementById("equipmentList");  
+equipment.forEach((item, index) => {  
+  const label = document.createElement("label");  
+  label.className = "check-item";  
+  label.innerHTML = `<input type="checkbox" class="equipment-check" aria-label="${item}"><span>${item}</span>`;  
+  equipmentList.appendChild(label);  
+});  
+document.querySelectorAll(".equipment-check").forEach(box => {  
+  box.addEventListener("change", updateEquipment);  
+});  
+  
+function updateEquipment() {  
+  const checks = [...document.querySelectorAll(".equipment-check")];  
+  const done = checks.filter(c => c.checked).length;  
+  const percent = Math.round(done / checks.length * 100);  
+  document.getElementById("equipmentPercent").textContent = percent + "%";  
+  document.getElementById("equipmentBar").style.width = percent + "%";  
+}  
+  
+function showPlan() {  
+  const fields = [  
+    ["山の名前", "mountain"],  
+    ["登山予定日", "date"],  
+    ["標高", "altitude"],  
+    ["参加人数", "members"],  
+    ["出発予定時刻", "startTime"],  
+    ["下山予定時刻", "endTime"],  
+    ["ルート・メモ", "route"]  
+  ];  
+  const output = fields.map(([label, id]) => {  
+    const value = document.getElementById(id).value.trim();  
+    return `<div><strong>${label}：</strong>${escapeHTML(value || "未入力")}</div>`;  
+  }).join("");  
+  document.getElementById("planOutput").innerHTML =  
+    `<div class="warning"><strong>入力した計画</strong>${output}</div>`;  
+}  
+  
+function escapeHTML(value) {  
+  return value.replace(/[&<>"']/g, ch => ({  
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"  
+  }[ch]));  
+}  
+  
+const questions = [  
+  {  
+    title: "普段から運動をしていますか？",  
+    choices: [  
+      ["定期的に運動している", 3],  
+      ["たまに運動している", 1],  
+      ["ほとんど運動していない", 0]  
+    ]  
+  },  
+  {  
+    title: "これまでに登山をした経験はありますか？",  
+    choices: [  
+      ["何度も登山をしたことがある", 3],  
+      ["数回だけある", 1],  
+      ["ほとんど経験がない", 0]  
+    ]  
+  },  
+  {  
+    title: "登山の開始時刻と下山時刻を考えていますか？",  
+    choices: [  
+      ["余裕を持った時間で計画している", 3],  
+      ["だいたい決めている", 1],  
+      ["あまり考えていない・遅い時間になりそう", 0]  
+    ]  
+  },  
+  {  
+    title: "登山当日の体調はどうですか？",  
+    choices: [  
+      ["体調に問題はない", 3],  
+      ["少し疲れや不安がある", 1]  
+    ]  
+  },  
+  {  
+    title: "登山に必要な装備を準備していますか？",  
+    choices: [  
+      ["必要な装備を一通り準備している", 3],  
+      ["一部足りないものがある", 1],  
+      ["必要な装備を持っていない", 0]  
+    ]  
+  },  
+  {  
+    title: "地図や登山アプリを準備していますか？",  
+    choices: [  
+      ["地図を確認し、必要なデータも準備した", 3],  
+      ["地図やアプリを確認している", 1],  
+      ["準備していない", 0]  
+    ]  
+  },  
+  {  
+    title: "登山届を提出する予定ですか？",  
+    choices: [  
+      ["提出した・提出する準備ができている", 3],  
+      ["提出方法を確認している", 1],  
+      ["提出していない・予定がない", 0]  
+    ]  
+  },  
+  {  
+    title: "山岳保険や遭難時の備えについて考えていますか？",  
+    choices: [  
+      ["必要な備えを確認している", 3],  
+      ["内容を調べている", 1]  
+    ]  
+  },  
+  {  
+    title: "登山予定日の天気を確認しましたか？",  
+    choices: [  
+      ["天気予報を確認し、問題がないか判断した", 3],  
+      ["天気が不安定・悪天候の心配がある", 0],  
+      ["まだ確認していない", 0]  
+    ]  
+  },  
+  {  
+    title: "登るルートの難易度や危険な場所を把握していますか？",  
+    choices: [  
+      ["ルートや危険箇所を十分に調べている", 3],  
+      ["ある程度調べている", 1],  
+      ["よく分かっていない", 0]  
+    ]  
+  },  
+  {  
+    title: "登山中の水分や食料を準備していますか？",  
+    choices: [  
+      ["必要な量を考えて準備している", 3],  
+      ["ある程度準備している", 1],  
+      ["十分に準備していない", 0]  
+    ]  
+  },  
+  {  
+    title: "一緒に登る人や緊急時の連絡方法を確認していますか？",  
+    choices: [  
+      ["メンバーや連絡方法を確認している", 3],  
+      ["一部確認している", 1],  
+      ["確認していない", 0]  
+    ]  
+  },  
+  {  
+    title: "道に迷ったり天候が悪くなったりした場合の計画はありますか？",  
+    choices: [  
+      ["引き返す基準や避難場所を考えている", 3],  
+      ["少し考えている", 1],  
+      ["特に考えていない", 0]  
+    ]  
+  },  
+  {  
+    title: "登山口までの交通手段や帰宅方法を確認していますか？",  
+    choices: [  
+      ["行き帰りの交通手段を確認している", 3],  
+      ["ある程度確認している", 1],  
+      ["まだ確認していない", 0]  
+    ]  
+  }  
+];  
+  
+let answers = Array(questions.length).fill(null);  
+let current = 0;  
+  
+const questionArea = document.getElementById("questionArea");  
+const nextBtn = document.getElementById("nextBtn");  
+const backBtn = document.getElementById("backBtn");  
+  
+function renderQuestion() {  
+  const q = questions[current];  
+  const percent = Math.round((current / questions.length) * 100);  
+  document.getElementById("questionCount").textContent =  
+    `QUESTION ${String(current + 1).padStart(2,"0")} / ${questions.length}`;  
+  document.getElementById("questionPercent").textContent = percent + "%";  
+  document.getElementById("questionBar").style.width = percent + "%";  
+  
+  questionArea.innerHTML = `  
+    <div class="question-number">QUESTION ${String(current + 1).padStart(2,"0")}</div>  
+    <h3 class="question-title">${q.title}</h3>  
+    <div class="choices">  
+      ${q.choices.map((choice, index) => `  
+        <label class="choice">  
+          <input type="radio" name="answer" value="${index}"  
+            ${answers[current] === index ? "checked" : ""}>  
+          <span>${choice[0]}</span>  
+        </label>  
+      `).join("")}  
+    </div>  
+  `;  
+  
+  questionArea.querySelectorAll('input[name="answer"]').forEach(input => {  
+    input.addEventListener("change", () => {  
+      answers[current] = Number(input.value);  
+      nextBtn.disabled = false;  
+    });  
+  });  
+  
+  nextBtn.disabled = answers[current] === null;  
+  nextBtn.textContent = current === questions.length - 1 ? "結果を見る" : "次へ";  
+  backBtn.disabled = current === 0;  
+}  
+  
+function nextQuestion() {  
+  if (answers[current] === null) return;  
+  if (current < questions.length - 1) {  
+    current++;  
+    renderQuestion();  
+  } else {  
+    showResult();  
+  }  
+}  
+  
+function previousQuestion() {  
+  if (current > 0) {  
+    current--;  
+    renderQuestion();  
+  }  
+}  
+  
+function showResult() {  
+  const scores = answers.map((answer, index) =>  
+    questions[index].choices[answer][1]  
+  );  
+  const score = scores.reduce((sum, value) => sum + value, 0);  
+  
+  const forcedReasons = [];  
+  const cautions = [];  
+  
+  if (answers[4] === 2) forcedReasons.push("必要な登山装備を持っていない");  
+  if (answers[6] === 2) forcedReasons.push("登山届を提出していない");  
+  if (answers[8] === 1) forcedReasons.push("天候が不安定・悪天候の心配がある");  
+  if (answers[8] === 2) forcedReasons.push("登山予定日の天気を確認していない");  
+  
+  const cautionItems = [  
+    [0, 2, "普段の運動量が少ない"],  
+    [1, 2, "登山経験がほとんどない"],  
+    [2, 2, "出発・下山時刻に不安がある"],  
+    [3, 1, "体調に不安がある"],  
+    [4, 1, "装備に不足がある"],  
+    [5, 1, "地図や登山アプリの準備が十分でない"],  
+    [5, 2, "地図や登山アプリを準備していない"],  
+    [7, 1, "山岳保険などの備えを確認中"],  
+    [9, 1, "ルートの確認が十分でない"],  
+    [9, 2, "ルートの難易度や危険箇所を把握していない"],  
+    [10, 1, "水分や食料の準備を見直す必要がある"],  
+    [10, 2, "水分や食料が十分でない"],  
+    [11, 1, "緊急時の連絡方法を見直す必要がある"],  
+    [11, 2, "緊急時の連絡方法が決まっていない"],  
+    [12, 1, "撤退・避難計画を見直す必要がある"],  
+    [12, 2, "撤退・避難計画がない"],  
+    [13, 1, "交通手段や帰宅方法の確認が不十分"],  
+    [13, 2, "交通手段や帰宅方法が決まっていない"]  
+  ];  
+  
+  cautionItems.forEach(([q, answer, message]) => {  
+    if (answers[q] === answer) cautions.push(message);  
+  });  
+  
+  let grade, message, advice;  
+  if (forcedReasons.length > 0 || score <= 19) {  
+    grade = "C";  
+    message = "今の状態では、登山に向けた準備を見直す必要があります。";  
+    advice = "不足している準備を整え、必要に応じて計画を変更・延期してください。";  
+  } else if (score <= 35) {  
+    grade = "B";  
+    message = "準備できている部分もありますが、まだ確認したい点があります。";  
+    advice = "注意点を一つずつ確認し、安全に登れる計画か見直しましょう。";  
+  } else {  
+    grade = "A";  
+    message = "多くの項目を確認できています。";  
+    advice = "出発直前にも天候や交通、登山道の最新情報を確認しましょう。";  
+  }  
+  
+  document.getElementById("quizPanel").classList.add("hidden");  
+  document.getElementById("resultPanel").classList.remove("hidden");  
+  document.getElementById("resultGrade").textContent = `判定：${grade}`;  
+  document.getElementById("resultScore").textContent = score;  
+  document.getElementById("resultMessage").textContent = message;  
+  
+  let warningHTML = "";  
+  if (forcedReasons.length) {  
+    warningHTML += `<div class="danger"><strong>重要な確認事項</strong><ul>${forcedReasons.map(x => `<li>${x}</li>`).join("")}</ul><p>これらが解決するまでは、登山を開始しないでください。天候が危険な場合は中止・延期してください。</p></div>`;  
+  }  
+  if (cautions.length) {  
+    warningHTML += `<div class="warning"><strong>見直したい項目</strong><ul>${cautions.map(x => `<li>${x}</li>`).join("")}</ul></div>`;  
+  }  
+  if (!warningHTML) {  
+    warningHTML = `<p>回答上、大きな注意項目はありませんでした。</p>`;  
+  }  
+  
+  document.getElementById("resultWarnings").innerHTML = warningHTML;  
+  document.getElementById("resultAdvice").innerHTML =  
+    `<p>${advice}</p>  
+     <p class="small-note">※点数や判定は登山の安全を保証するものではありません。A判定でも、悪天候・体調不良・装備不足などがあれば登山を中止してください。</p>`;  
+  
+  document.getElementById("resultPanel").scrollIntoView({behavior:"smooth", block:"start"});  
+}  
+  
+function restartQuiz() {  
+  answers = Array(questions.length).fill(null);  
+  current = 0;  
+  document.getElementById("resultPanel").classList.add("hidden");  
+  document.getElementById("quizPanel").classList.remove("hidden");  
+  renderQuestion();  
+  document.getElementById("diagnosis").scrollIntoView({behavior:"smooth"});  
+}  
+  
+renderQuestion();  
+updateEquipment();  
+</script>  
+</body>  
+</html>  
