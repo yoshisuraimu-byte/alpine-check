@@ -53,7 +53,63 @@ header {
   align-items: center;  
   justify-content: space-between;  
   gap: 12px;  
+  flex-wrap: wrap;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }  
+.language-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+.language-control label {
+  color: var(--bright);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.language-control select {
+  width: auto;
+  max-width: 125px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0d211a;
+  color: var(--white);
+  font: inherit;
+  font-size: 12px;
+}
+.time-field {
+  /* 時刻欄も通常の入力欄と同じサイズ・配置にする */
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.time-field label {
+  color: var(--muted);
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+.time-field input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+@media (max-width: 650px) {
+  .header-inner { justify-content: space-between; }
+  nav { order: 3; width: 100%; padding-bottom: 4px; }
+  .language-control { margin-left: auto; }
+  .language-control label { font-size: 11px; }
+  .language-control select { max-width: 112px; }
+}
 .logo { font-weight: 900; letter-spacing: 2px; color: var(--bright); }  
 nav { display: flex; gap: 14px; flex-wrap: wrap; }  
 nav a { font-size: 12px; text-decoration: none; color: var(--muted); }  
@@ -136,8 +192,12 @@ section { padding: 30px 0; scroll-margin-top: 75px; }
   color: var(--muted);  
   margin-bottom: 5px;  
 }  
-input, textarea {  
-  width: 100%;  
+input:not([type="checkbox"]):not([type="radio"]), textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   background: #0d211a;  
   color: var(--white);  
   border: 1px solid var(--line);  
@@ -145,8 +205,41 @@ input, textarea {
   padding: 11px 12px;  
   outline: none;  
 }  
-input:focus, textarea:focus { border-color: var(--green); }  
-textarea { min-height: 76px; resize: vertical; }  
+input:focus, textarea:focus { border-color: var(--green); }
+/* チェックボックス・ラジオボタンの大きさを統一 */
+input[type="checkbox"],
+input[type="radio"] {
+  appearance: auto;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  max-width: 18px;
+  padding: 0;
+  margin: 2px 0 0;
+  flex: 0 0 18px;
+  accent-color: var(--green);
+  cursor: pointer;
+}  
+textarea {
+  min-height: 76px;
+  resize: vertical;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+/* iPad / iOSの日時入力欄が固有の幅で横にはみ出すのを防ぐ */
+input[type="date"],
+input[type="time"],
+input[type="number"],
+input[type="text"] {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.panel, .panel * { min-width: 0; }
+.panel { overflow: hidden; }  
 .small-note { color: var(--muted); font-size: 12px; }  
 .weather-options, .choices { display: grid; gap: 10px; }  
 .choice {  
@@ -249,6 +342,44 @@ footer {
   color: var(--muted);  
   font-size: 11px;  
 }  
+/* iPadなどタッチ端末では登山計画の入力欄を1列にし、
+   iOSの日付・時刻入力の内部幅によるはみ出しや重なりを防ぐ */
+#plan .grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  min-width: 0;
+}
+#plan .grid > .field {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+#plan input:not([type="checkbox"]):not([type="radio"]),
+#plan textarea {
+  display: block;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+#plan input[type="date"],
+#plan input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+@media (hover: none) and (pointer: coarse) {
+  #plan .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 900px) {
+  #plan .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 @media (max-width: 650px) {  
   .wrap { width: min(100% - 26px, 960px); }  
   .hero { padding: 35px 0 25px; }  
@@ -275,7 +406,14 @@ footer {
       <a href="#diagnosis">診断</a>  
       <a href="#weather">天気</a>  
     </nav>
-    <select id="languageSelect" aria-label="Language" onchange="setLanguage(this.value)" style="background:#142a23;color:#f3f7f2;border:1px solid #345044;border-radius:8px;padding:7px;max-width:125px"><option value="ja">日本語</option><option value="en">English</option><option value="zh">中文</option></select>  
+    <div class="language-control">
+      <label for="languageSelect">🌐 表示言語</label>
+      <select id="languageSelect" aria-label="表示言語を選択" onchange="setLanguage(this.value)">
+        <option value="ja">日本語</option>
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+      </select>
+    </div>  
   </div>  
 </header>  
   
@@ -329,11 +467,11 @@ footer {
             <label for="members">参加人数</label>  
             <input id="members" type="number" min="1" placeholder="例：3">  
           </div>  
-          <div class="field">  
-            <label for="startTime">出発予定時刻</label>  
+          <div class="field time-field">  
+            <label for="startTime">登山開始予定時刻</label>  
             <input id="startTime" type="time">  
           </div>  
-          <div class="field">  
+          <div class="field time-field">  
             <label for="endTime">下山予定時刻</label>  
             <input id="endTime" type="time">  
           </div>  
@@ -770,6 +908,31 @@ const originals=new WeakMap();
 function translateText(s){const t=s.trim();const v=translations[t]?.[activeLanguage];return v?s.replace(t,v):s;}
 function applyLanguage(){document.documentElement.lang=activeLanguage==="zh"?"zh-CN":activeLanguage;const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){if(!originals.has(n))originals.set(n,n.nodeValue);const old=originals.get(n);n.nodeValue=activeLanguage==="ja"?old:translateText(old);}}
 function setLanguage(v){activeLanguage=["ja","en","zh"].includes(v)?v:"ja";applyLanguage();}
+</script>
+<script>
+/* Language selector usability and preference */
+translations["🌐 表示言語"] = {
+  en: "🌐 Language",
+  zh: "🌐 显示语言"
+};
+translations["登山開始予定時刻"] = {
+  en: "Planned Hiking Start Time",
+  zh: "计划登山开始时间"
+};
+const originalSetLanguage = setLanguage;
+setLanguage = function(language) {
+  originalSetLanguage(language);
+  try { localStorage.setItem("alpineCheckLanguage", activeLanguage); } catch (e) {}
+};
+(function restoreLanguagePreference() {
+  let saved = "ja";
+  try { saved = localStorage.getItem("alpineCheckLanguage") || "ja"; } catch (e) {}
+  const selector = document.getElementById("languageSelect");
+  if (selector && ["ja", "en", "zh"].includes(saved)) {
+    selector.value = saved;
+    if (saved !== "ja") setLanguage(saved);
+  }
+})();
 </script>
 </body>  
 </html>  
